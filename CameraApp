@@ -19,7 +19,9 @@ index.html
     </head>
     <body>
         <input type="button" id="button1" value="Take a photo" />
-        <img src="" id="image1" style="width:304px;height:228px;">
+        <canvas id="mainCanvas" width="300" height="450"></canvas>
+        <canvas id="colorPicker"width="50" height="50"></canvas>
+         
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="scripts/platformOverrides.js"></script>
         <script type="text/javascript" src="scripts/index.js"></script>
@@ -39,19 +41,28 @@ index.js
         // Handle the Cordova pause and resume events
         document.addEventListener( 'pause', onPause.bind( this ), false );
         document.addEventListener('resume', onResume.bind(this), false);
-        document.getElementById("button1").onclick = function()
-        {
+        
+        document.getElementById("button1").onclick = function () {
             navigator.camera.getPicture(onSuccess, onFail, {
                 quality: 50,
+                correctOrientation: true,
+                encodingType: Camera.EncodingType.JPEG,
                 destinationType: Camera.DestinationType.FILE_URI
             });
-        }
-
+            
         function onSuccess(imageURI) {
-            var image = document.getElementById('image1');
-            image.src = imageURI;
-        }
 
+            var canvas = document.getElementById('mainCanvas');
+            var context = canvas.getContext('2d');
+            var imageObj = new Image();
+
+            imageObj.onload = function () {
+                context.drawImage(imageObj, 10, 10, canvas.width, canvas.height);
+            };
+            imageObj.src = imageURI;
+            var color = document.getElementById('colorPicker');
+         }
+         
         function onFail(message) {
             alert('Failed because: ' + message);
         }
