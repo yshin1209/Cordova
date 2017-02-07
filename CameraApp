@@ -1,0 +1,83 @@
+Visual Studio Black Cordova Template
+
+config.xml --> Add Camera plug-in
+
+index.html
+<!DOCTYPE html>
+<html>
+    <head>
+    <!--
+        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+    -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+        
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <title>BlankCordovaApp11</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1>Apache Cordova</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+        </div>
+
+        <input type="button" id="button1" value="Take a photo" />
+        <p id="image1"></p>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+        <script type="text/javascript" src="scripts/index.js"></script>
+    </body>
+</html>
+
+
+
+index.js
+
+(function () {
+    "use strict";
+
+    document.addEventListener( 'deviceready', onDeviceReady.bind( this ), false );
+
+    function onDeviceReady() {
+        // Handle the Cordova pause and resume events
+        document.addEventListener( 'pause', onPause.bind( this ), false );
+        document.addEventListener('resume', onResume.bind(this), false);
+        document.getElementById("button1").onclick = function()
+        {
+            navigator.camera.getPicture(onSuccess, onFail, {
+                quality: 50,
+                destinationType: Camera.DestinationType.FILE_URI
+            });
+        }
+
+        function onSuccess(imageURI) {
+            var image = document.getElementById('image1');
+            image.src = imageURI;
+        }
+
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+        
+        // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
+        var parentElement = document.getElementById('deviceready');
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+    };
+
+    function onPause() {
+        // TODO: This application has been suspended. Save application state here.
+    };
+
+    function onResume() {
+        // TODO: This application has been reactivated. Restore application state here.
+    };
+} );
